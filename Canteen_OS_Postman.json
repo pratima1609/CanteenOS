@@ -1,0 +1,463 @@
+{
+  "info": {
+    "_postman_id": "canteen-os-full-api",
+    "name": "Canteen OS - Complete API Suite",
+    "description": "Full API test collection for Canteen OS Food Court Management System.\n\nWorkflow: Login first → token auto-saved → all other requests authenticated.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{auth_token}}", "type": "string" }]
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:5000", "type": "string" },
+    { "key": "auth_token", "value": "", "type": "string" }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (pm.response.json() && pm.response.json().token) {",
+          "    pm.collectionVariables.set('auth_token', pm.response.json().token);",
+          "    console.log('Token saved automatically.');",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Register Student",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@test.com\",\n  \"password\": \"password123\",\n  \"name\": \"John Doe\",\n  \"role\": \"student\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/auth/register" }
+          }
+        },
+        {
+          "name": "Register Stall Owner",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"stallowner@test.com\",\n  \"password\": \"password123\",\n  \"name\": \"Chef Kumar\",\n  \"role\": \"stall_owner\",\n  \"stall_name\": \"Kumar's Kitchen\",\n  \"fssai_number\": \"11223344556677\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/auth/register" }
+          }
+        },
+        {
+          "name": "Login as Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('auth_token', jsonData.token);",
+                  "    console.log('Admin token saved.');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@canteen.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/auth/login" }
+          }
+        },
+        {
+          "name": "Login as Student",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('auth_token', jsonData.token);",
+                  "    console.log('Student token saved.');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@test.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/auth/login" }
+          }
+        },
+        {
+          "name": "Login as Stall Owner",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('auth_token', jsonData.token);",
+                  "    console.log('Stall owner token saved.');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"stallowner@test.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/auth/login" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👨‍💼 Admin",
+      "item": [
+        {
+          "name": "Get All Stalls",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/admin/stalls" }
+          }
+        },
+        {
+          "name": "Approve Stall",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/admin/stalls/1/approve" }
+          }
+        },
+        {
+          "name": "Reject Stall",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/admin/stalls/1/reject" }
+          }
+        },
+        {
+          "name": "Suspend Stall",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/admin/stalls/1/suspend" }
+          }
+        },
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/admin/categories" }
+          }
+        },
+        {
+          "name": "Add New Category",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Chinese\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/admin/categories" }
+          }
+        },
+        {
+          "name": "Get Analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/admin/analytics" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🍳 Stall Owner",
+      "item": [
+        {
+          "name": "Get Categories (for Menu)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/stall/categories" }
+          }
+        },
+        {
+          "name": "Get My Menu",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/stall/menu" }
+          }
+        },
+        {
+          "name": "Add Menu Item",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category_id\": 3,\n  \"name\": \"Vada Pav\",\n  \"description\": \"Mumbai's iconic street food\",\n  \"price\": 30,\n  \"is_veg\": true,\n  \"is_available\": true,\n  \"prep_time_minutes\": 5\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/stall/menu" }
+          }
+        },
+        {
+          "name": "Update Menu Item",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category_id\": 3,\n  \"name\": \"Vada Pav Special\",\n  \"description\": \"With extra chutney\",\n  \"price\": 40,\n  \"is_veg\": true,\n  \"is_available\": true,\n  \"prep_time_minutes\": 7\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/stall/menu/1" }
+          }
+        },
+        {
+          "name": "Delete Menu Item",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/stall/menu/1" }
+          }
+        },
+        {
+          "name": "Toggle Stall Open/Close",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_open\": true\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/stall/status" }
+          }
+        },
+        {
+          "name": "Get Live Queue",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/stall/sub-orders" }
+          }
+        },
+        {
+          "name": "Accept Order",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"accepted\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/stall/sub-orders/1/status" }
+          }
+        },
+        {
+          "name": "Start Preparing Order",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"preparing\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/stall/sub-orders/1/status" }
+          }
+        },
+        {
+          "name": "Mark Order Ready",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ready\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/stall/sub-orders/1/status" }
+          }
+        },
+        {
+          "name": "Reject Order",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"rejected\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/stall/sub-orders/1/status" }
+          }
+        },
+        {
+          "name": "Verify Pickup Token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"ABC12345\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/stall/pickup/verify" }
+          }
+        },
+        {
+          "name": "Get Order History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/stall/history" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🎓 Student",
+      "item": [
+        {
+          "name": "Browse Open Stalls",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/stalls" }
+          }
+        },
+        {
+          "name": "Get Stall Menu",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/stalls/1/menu" }
+          }
+        },
+        {
+          "name": "Get Pickup Slots",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/stalls/1/slots" }
+          }
+        },
+        {
+          "name": "View Cart",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/cart" }
+          }
+        },
+        {
+          "name": "Add Item to Cart",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"menu_item_id\": 1,\n  \"quantity\": 2\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/cart/add" }
+          }
+        },
+        {
+          "name": "Update Cart Item Quantity",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 3\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/cart/1" }
+          }
+        },
+        {
+          "name": "Remove Cart Item",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/cart/1" }
+          }
+        },
+        {
+          "name": "Checkout (Place Order)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/orders/checkout" }
+          }
+        },
+        {
+          "name": "Get Order History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/orders" }
+          }
+        },
+        {
+          "name": "Track Specific Order",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/orders/1" }
+          }
+        },
+        {
+          "name": "Get Queue Position",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/api/orders/1/queue/1" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "❤️ Health Check",
+      "item": [
+        {
+          "name": "Server Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/health" },
+            "auth": { "type": "noauth" }
+          }
+        }
+      ]
+    }
+  ]
+}
